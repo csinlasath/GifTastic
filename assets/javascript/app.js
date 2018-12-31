@@ -31,9 +31,9 @@ $("document").ready(function() {
                 function addGifs() {
                     for(var i = 0; i < 10; i++) {
                         if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
-                            var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                            var gifCard = $("<div class='card' style='width: 225px;height: 350px;'></div>");
                             var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
-                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + results[i].title.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' download>Download Image</a></div>");
+                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + results[i].title.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' style='width: 100%' download>Download Image</a><a class='btn btn-success favorite-gif' style='width: 100%'>Favorite This</a></div>");
                             gifCardBody.append(gifImage);
                             $("#gifs-area").append(gifCard.css("float", "left"));
                         }
@@ -50,10 +50,6 @@ $("document").ready(function() {
         loadMoreButton.text("More Images");
         loadMoreButton.css("width", "100%");
         $("#buttons-area").append(loadMoreButton);
-        $(".load-button").on("click", function(event) {
-            event.preventDefault();
-            loadMoreGifs();
-        });
     }
 
     function addButtons(game) {
@@ -78,9 +74,9 @@ $("document").ready(function() {
                     for(var i = 0; i < 10; i++) {
                         if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
                             var resultsTitle = results[i].title.slice(0,16);
-                            var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                            var gifCard = $("<div class='card' style='width: 225px;height: 350px;'></div>");
                             var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
-                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' target='_blank'  download>Download Image</a></div>");
+                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' style='width: 100%' download>Download Image</a><a class='btn btn-success favorite-gif' style='width: 100%'>Favorite This</a></div>");
                             gifCardBody.append(gifImage);
                             $("#gifs-area").prepend(gifCard.css("float", "left"));
                         }
@@ -88,6 +84,29 @@ $("document").ready(function() {
                 }
                 $("#buttons-area").empty();
                 addGifs();
+                addLoadMoreButton();
+                $(".load-button").on("click", function() {
+                    var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
+                    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + currentTopic + giphyAPIKey;
+            
+                    console.log(currentTopic);
+                    $.ajax({
+                        url: queryURL,
+                        method: "GET"
+                    }).then(function(response) {
+                        var results = response.data;
+                            for(var i = 0; i < 10; i++) {
+                                if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                                    var resultsTitle = results[i].title.slice(0,16);
+                                    var gifCard = $("<div class='card' style='width: 225px;height: 350px;'></div>");
+                                    var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
+                                    var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary'  style='width: 100%' download>Download Image</a><a class='btn btn-success favorite-gif' style='width: 100%'>Favorite This</a></div>");
+                                    gifCardBody.append(gifImage);
+                                    $("#gifs-area").append(gifCard.css("float", "left"));
+                                }
+                            }   
+                    })
+                });
             });
         }
         else {
@@ -105,9 +124,9 @@ $("document").ready(function() {
                     for(var i = 0; i < 10; i++) {
                         if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
                             var resultsTitle = results[i].title.slice(0,16);
-                            var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                            var gifCard = $("<div class='card' style='width: 225px;height: 350px;'></div>");
                             var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
-                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' target='_blank'  download>Download Image</a></div>");
+                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary'  style='width: 100%' download>Download Image</a><a class='btn btn-success favorite-gif' style='width: 100%'>Favorite This</a></div>");
                             gifCardBody.append(gifImage);
                             $("#gifs-area").prepend(gifCard.css("float", "left"));
                         }
@@ -115,6 +134,29 @@ $("document").ready(function() {
                 }
                 $("#buttons-area").empty();
                 addGifs();
+                addLoadMoreButton();
+                $(".load-button").on("click", function() {
+                    var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
+                    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + currentTopic + giphyAPIKey;
+            
+                    console.log(currentTopic);
+                    $.ajax({
+                        url: queryURL,
+                        method: "GET"
+                    }).then(function(response) {
+                        var results = response.data;
+                            for(var i = 0; i < 10; i++) {
+                                if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                                    var resultsTitle = results[i].title.slice(0,16);
+                                    var gifCard = $("<div class='card' style='width: 225px;height: 350px;'></div>");
+                                    var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
+                                    var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary'  style='width: 100%' download>Download Image</a><a class='btn btn-success favorite-gif' style='width: 100%'>Favorite This</a></div>");
+                                    gifCardBody.append(gifImage);
+                                    $("#gifs-area").append(gifCard.css("float", "left"));
+                                }
+                            }   
+                    })
+                });
             });
         }
     }
@@ -136,16 +178,39 @@ $("document").ready(function() {
                 for(var i = 0; i < 10; i++) {
                     if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
                         var resultsTitle = results[i].title.slice(0,16);
-                        var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                        var gifCard = $("<div class='card' style='width: 225px;height: 350px;'></div>");
                         var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
-                        var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' target='_blank' download>Download Image</a></div>");
+                        var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary'  style='width: 100%' download>Download Image</a><a class='btn btn-success favorite-gif' style='width: 100%'>Favorite This</a></div>");
                         gifCardBody.append(gifImage);
                         $("#gifs-area").prepend(gifCard.css("float", "left"));
                     }
                 }
-            }
+            }     
             $("#buttons-area").empty();
             addGifs();
+            addLoadMoreButton();
+            $(".load-button").on("click", function() {
+                var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
+                var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + currentTopic + giphyAPIKey;
+        
+                console.log(currentTopic);
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).then(function(response) {
+                    var results = response.data;
+                        for(var i = 0; i < 10; i++) {
+                            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                                var resultsTitle = results[i].title.slice(0,16);
+                                var gifCard = $("<div class='card' style='width: 225px;height: 350px;'></div>");
+                                var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
+                                var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary'  style='width: 100%' download>Download Image</a><a class='btn btn-success favorite-gif' style='width: 100%'>Favorite This</a></div>");
+                                gifCardBody.append(gifImage);
+                                $("#gifs-area").append(gifCard.css("float", "left"));
+                            }
+                        }   
+                })
+            });
             $(".user-button").on("click", function() {
                 var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
                 var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + $(this).attr("id") + giphyAPIKey;
@@ -162,9 +227,9 @@ $("document").ready(function() {
                         for(var i = 0; i < 10; i++) {
                             if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
                                 var resultsTitle = results[i].title.slice(0,16);
-                                var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                                var gifCard = $("<div class='card' style='width: 225px;height: 350px;'></div>");
                                 var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
-                                var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' target='_blank' download>Download Image</a></div>");
+                                var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' style='width: 100%' download>Download Image</a><a class='btn btn-success favorite-gif' style='width: 100%'>Favorite This</a></div>");
                                 gifCardBody.append(gifImage);
                                 $("#gifs-area").prepend(gifCard.css("float", "left"));
                             }
@@ -172,6 +237,7 @@ $("document").ready(function() {
                     }
                     $("#buttons-area").empty();
                     addGifs();
+                    addLoadMoreButton();
                 })
             });
         })
@@ -181,6 +247,5 @@ $("document").ready(function() {
         event.preventDefault();
         addButtons($("#game-text-field").val());
     });
-
 });
 
