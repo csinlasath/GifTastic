@@ -1,78 +1,185 @@
 
 
 /*
-Add 10 Gifs per page
 Create favorite section
-create topic section
-additional meta tags
-responsive
-one click download
-
-under every gif, show rating
-
-loop and append buttons
 non animated, animate when clicked
-
-add a form for user input and add to array for topics
-
 */
 
 $("document").ready(function() {
-    var buttonsArray = ["dog", "cat", "rabbit", "hamster", "skunk", "goldfish"];
-    var favoriteGifs = [];
-    var gifTopics = [];
+    var buttonsArray = ["Galaga", "Rampage", "Space Invaders", "Street Fighter", "Mortal Kombat", "Pac-man", "Donkey Kong", "Crystal Castles", "Super Mario", "Defender", "NBA Jam"];
+    var currentTopic = "";
 
     function createButtons() {
         for (var i = 0; i < buttonsArray.length; i++) {
-            var gifButton = $("<button type='button' class='btn btn-info animal-button'></button>");
+            var gifButton = $("<button type='button' class='btn btn-info game-button'></button>");
             gifButton.attr("id", buttonsArray[i]);
             gifButton.text(buttonsArray[i]);
             $("#masthead").append(gifButton);
         }
     }
 
-    function addButtons(animal) {
-        var newButton = $("<button type='button' class='btn btn-info animal-button'></button>");
-        newButton.attr("id", animal);
-        newButton.text(animal);
-        $("#masthead").append(newButton);
+    function loadMoreGifs() {
+        $("#load-more-button").on("click", function() {
+            var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + currentTopic + giphyAPIKey;
+
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response) {
+                var results = response.data;
+                function addGifs() {
+                    for(var i = 0; i < 10; i++) {
+                        if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                            var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                            var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
+                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + results[i].title.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' download>Download Image</a></div>");
+                            gifCardBody.append(gifImage);
+                            $("#gifs-area").append(gifCard.css("float", "left"));
+                        }
+                    }
+                }
+                $("#buttons-area").empty();
+                addGifs();
+            })
+        });
     }
 
-
-
-    function createGifs() {
-        
+    function addLoadMoreButton() {
+        var loadMoreButton = $("<button type='button' class='btn btn-info load-button'></button>");
+        loadMoreButton.text("More Images");
+        loadMoreButton.css("width", "100%");
+        $("#buttons-area").append(loadMoreButton);
+        $(".load-button").on("click", function(event) {
+            event.preventDefault();
+            loadMoreGifs();
+        });
     }
 
+    function addButtons(game) {
+        if (buttonsArray.indexOf(game) === -1) {
+            buttonsArray.push(game);
+            var newButton = $("<button type='button' class='btn btn-info game-button user-button'></button>");
+            newButton.attr("id", game);
+            newButton.text(game);
+            $("#masthead").append(newButton);
+    
+            var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + game + giphyAPIKey;
+            currentTopic = game;
+    
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response) {
+                var results = response.data;
+                $("#gifs-area").empty();
+                function addGifs() {
+                    for(var i = 0; i < 10; i++) {
+                        if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                            var resultsTitle = results[i].title.slice(0,16);
+                            var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                            var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
+                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' target='_blank'  download>Download Image</a></div>");
+                            gifCardBody.append(gifImage);
+                            $("#gifs-area").prepend(gifCard.css("float", "left"));
+                        }
+                    }
+                }
+                $("#buttons-area").empty();
+                addGifs();
+            });
+        }
+        else {
+            var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + game + giphyAPIKey;
+            currentTopic = game;
+    
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response) {
+                var results = response.data;
+                $("#gifs-area").empty();
+                function addGifs() {
+                    for(var i = 0; i < 10; i++) {
+                        if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                            var resultsTitle = results[i].title.slice(0,16);
+                            var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                            var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
+                            var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' target='_blank'  download>Download Image</a></div>");
+                            gifCardBody.append(gifImage);
+                            $("#gifs-area").prepend(gifCard.css("float", "left"));
+                        }
+                    }
+                }
+                $("#buttons-area").empty();
+                addGifs();
+            });
+        }
+    }
     createButtons();
 
-    $(".animal-button").on("click", function() {
-        var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK&limit=10";
+    $(".game-button").on("click", function() {
+        var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
         var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + $(this).attr("id") + giphyAPIKey;
-        var newURL = "";
+        currentTopic = $(this).attr("id");
+        console.log(currentTopic);
 
         $.ajax({
             url: queryURL,
             method: "GET"
         }).then(function(response) {
             var results = response.data;
-            console.log(results);
             $("#gifs-area").empty();
-            for(var i = 0; i < 10; i++) {
-                if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
-                    var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
-                    var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
-                    var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + results[i].title.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' download>Download Image</a></div>");
-                    gifCardBody.append(gifImage);
-                    $("#gifs-area").prepend(gifCard.css("float", "left"));
+            function addGifs() {
+                for(var i = 0; i < 10; i++) {
+                    if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                        var resultsTitle = results[i].title.slice(0,16);
+                        var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                        var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
+                        var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' target='_blank' download>Download Image</a></div>");
+                        gifCardBody.append(gifImage);
+                        $("#gifs-area").prepend(gifCard.css("float", "left"));
+                    }
                 }
             }
+            $("#buttons-area").empty();
+            addGifs();
+            $(".user-button").on("click", function() {
+                var giphyAPIKey = "&api_key=RFgjUvZdnGSci14BZRCksEu9kKe7P8HK";
+                var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + $(this).attr("id") + giphyAPIKey;
+                currentTopic = $(this).attr("id");
+                console.log(currentTopic);
+        
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).then(function(response) {
+                    var results = response.data;
+                    $("#gifs-area").empty();
+                    function addGifs() {
+                        for(var i = 0; i < 10; i++) {
+                            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                                var resultsTitle = results[i].title.slice(0,16);
+                                var gifCard = $("<div class='card' style='width: 225px;height: 300px;'></div>");
+                                var gifImage = $(gifCard).append("<img class='card-img-top' style='height: 150px;' src='" + results[i].images.fixed_height.url + "'>");
+                                var gifCardBody = $(gifCard).append("<div class='card-body'><h5 class='card-title'>" + resultsTitle.replace("GIF", "") + "</h5><p class='card-text'>Rating : " + results[i].rating.toUpperCase() + "</p><a href='" + results[i].images.fixed_height.url + "' class='btn btn-primary' target='_blank' download>Download Image</a></div>");
+                                gifCardBody.append(gifImage);
+                                $("#gifs-area").prepend(gifCard.css("float", "left"));
+                            }
+                        }
+                    }
+                    $("#buttons-area").empty();
+                    addGifs();
+                })
+            });
         })
     });
 
-    $("#submit-animal").on("click", function() {
-        addButtons($("#animal-text-field").val());
-
+    $("#submit-game").on("click", function(event) {
+        event.preventDefault();
+        addButtons($("#game-text-field").val());
     });
 
 });
